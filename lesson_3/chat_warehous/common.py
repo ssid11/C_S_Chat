@@ -53,4 +53,3 @@ class Constants:
     GREETINGS = 'presense'
     RESPONSE = 'response'
     ERROR = 'error'
-
