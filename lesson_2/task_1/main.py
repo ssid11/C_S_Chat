@@ -38,12 +38,14 @@ os_code_list, os_type_list. В этой же функции создать гл�
 """
 import os
 import chardet
+import csv
 
-def get_data(in_file_lst):
+def get_data():
     param_lst = ['Изготовитель системы', 'Название ОС', 'Код продукта', 'Тип системы']
     main_data = []
     main_data.append(param_lst)
-    for file in in_file_lst:
+    file_no = 1
+    for file in list(filter(lambda x: x.endswith('.txt'), os.listdir(os.path.abspath('.')))):
         with open(os.path.join('.',file), mode='rb') as f:
             ret_dict = {}
             for line in f.readlines():
@@ -51,11 +53,18 @@ def get_data(in_file_lst):
                 line = line.decode(result['encoding'])
                 if len(line.split(':')) > 1 and line.split(':')[0] in param_lst :
                     ret_dict[line.split(':')[0]]=line.split(':')[1].strip()
-        main_data.append([ret_dict[x] for x in param_lst])
+        row =  [ret_dict[x] for x in param_lst]
+        row.insert(0,file_no)
+        main_data.append(row)
+        file_no += 1
     return main_data
 
+def write_to_csv(out_file):
+    with open(out_file, mode='w', encoding='utf-8') as f:
+        writer = csv.writer(f, quoting=csv.QUOTE_NONNUMERIC)
+        for el in get_data():
+            writer.writerow(el)
 
-files_lst = list(filter(lambda x: x.endswith('.txt'), os.listdir(os.path.abspath('.'))))
-print(get_data(files_lst))
+write_to_csv('my.csv')
 
 
