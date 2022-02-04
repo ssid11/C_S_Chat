@@ -6,6 +6,7 @@ import json
 import logging
 
 import log.client_log_config
+from log.client_log_config import log
 import common
 
 logger = logging.getLogger('client')
@@ -20,7 +21,7 @@ class Client:
             logger.log(logging.CRITICAL, str(e))
             sys.exit()
 
-
+    @log
     def Exchange(self, to_server):
         common.send_mesages(self.socket, to_server)
         logger.log(logging.INFO, f'На сервер отправлено сообщение :{to_server}')
@@ -33,5 +34,6 @@ class Client:
         except (ValueError, json.JSONDecodeError):
             logger.log(logging.WARNING,'Не удалось декодировать сообщение сервера.')
 
+    @log
     def Greetings(self):
         self.Exchange( common.create_greetings())

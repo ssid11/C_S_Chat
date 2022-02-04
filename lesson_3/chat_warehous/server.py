@@ -7,6 +7,7 @@ import json
 import logging
 
 import log.server_log_config
+from log.server_log_config import log
 import common
 
 logger = logging.getLogger('server')
@@ -22,7 +23,7 @@ class Server:
         except Exception as e:
             logger.log(logging.CRITICAL, str(e))
             sys.exit()
-
+    @log
     def Run(self):
         try:
             while 1:
