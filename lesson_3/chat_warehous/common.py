@@ -18,14 +18,13 @@ def send_mesages(sock, messages):
     sock.send(encoded_messages)
 
 def handler_client_messages(messages):
-    if Constants.ACTION in messages and messages[
-        Constants.ACTION] == Constants.GREETINGS and Constants.TIME in messages and\
-        Constants.USER in messages and\
-        messages[Constants.USER][Constants.ACCOUNT_NAME] == 'Guest':
+    if not Constants.ACTION in messages or not Constants.TIME in messages or not Constants.USER in messages:
+        print('Обработка сообщения. Неверный формат запроса.')
+        return {Constants.RESPONSE: 400, Constants.ERROR: 'Bad Request'}
+    if messages[Constants.ACTION] == Constants.GREETINGS:
         print('Обработка сообщения. Все в порядке')
         return {Constants.RESPONSE: 200}
-    print('Обработка сообщения. Неверный формат запроса.')
-    return {Constants.RESPONSE: 400, Constants.ERROR: 'Bad Request'}
+
 
 def create_greetings(account_name='Guest'):
     return {Constants.ACTION: Constants.GREETINGS, Constants.TIME: time.time(), Constants.USER: {
@@ -53,3 +52,4 @@ class Constants:
     GREETINGS = 'presense'
     RESPONSE = 'response'
     ERROR = 'error'
+    VALID_ACTIONS = ['presence','prоbe', 'msg', 'quit', 'authenticate', 'join', 'leave', 'broadcast']
