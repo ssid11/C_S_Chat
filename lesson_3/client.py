@@ -15,8 +15,9 @@ if not args.p in range(1025,65556):
     sys.exit(1)
 
 try:
+    nik_name = input('Введите ваш ник:')
     client = Client(address=args.a, port=args.p)
     logger.log(logging.INFO, f'Запущенн чат-клиент. Адрес {args.a}, порт {args.p}.')
-    client.Greetings()
+    client.Greetings(nik_name)
 except Exception as e:
     logger.log(logging.CRITICAL,str(e))

@@ -35,5 +35,5 @@ class Client:
             logger.log(logging.WARNING,'Не удалось декодировать сообщение сервера.')
 
     @log
-    def Greetings(self):
-        self.Exchange( common.create_greetings())
+    def Greetings(self, name='Guest'):
+        self.Exchange( common.create_greetings(name))
