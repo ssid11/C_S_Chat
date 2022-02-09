@@ -16,6 +16,7 @@ class Client:
                  proto = common.Constants.DEFAULT_PROTO, soc_type=common.Constants.DEFAULT_TYPE):
         try:
             self.socket = socket(soc_type,proto)
+            self.socket.settimeout(None)
             self.socket.connect((address, port))
         except Exception as e:
             logger.log(logging.CRITICAL, str(e))
