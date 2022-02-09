@@ -12,10 +12,14 @@ import common
 logger = logging.getLogger('client')
 
 class Client:
+
+    __slots__ = ['socket']
+
     def __init__(self,address = common.Constants.DEFAULT_IP_ADDRESS, port=common.Constants.DEFAULT_PORT,
                  proto = common.Constants.DEFAULT_PROTO, soc_type=common.Constants.DEFAULT_TYPE):
         try:
             self.socket = socket(soc_type,proto)
+            self.socket.settimeout(None)
             self.socket.connect((address, port))
         except Exception as e:
             logger.log(logging.CRITICAL, str(e))
@@ -37,3 +41,6 @@ class Client:
     @log
     def Greetings(self, name='Guest'):
         self.Exchange( common.create_greetings(name))
+
+    def Stop(self):
+        self.socket.close()

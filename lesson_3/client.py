@@ -21,3 +21,4 @@ try:
     client.Greetings(nik_name)
 except Exception as e:
     logger.log(logging.CRITICAL,str(e))
+    client.Stop()

@@ -24,7 +24,7 @@ class Server:
             self.socket = socket(soc_type, proto)
             self.socket.bind((address, port))
             self.socket.listen(common.Constants.MAX_CONNECTIONS)
-            self.socket.settimeout(None)
+            self.socket.settimeout(0.5)
             self.clients_list = list()
             self.messages_list = list()
         except Exception as e:
@@ -34,8 +34,13 @@ class Server:
     def Run(self):
         try:
             while 1:
-                client, client_address = self.socket.accept()
-                logger.log(logging.INFO, f'Подключился клиент: {client_address}')
+                try:
+                    client, client_address = self.socket.accept()
+                    # client.settimeout(0)
+                    logger.log(logging.INFO, f'Подключился клиент: {client_address}')
+                    self.clients_list.append(client)
+                except Exception as e:
+                    print(e)
                 # try:
                 #     messages_from_client = common.get_messages(client)
                 #     logger.log(logging.INFO, f'Сообщение от клиента: {messages_from_client}')
@@ -65,7 +70,7 @@ class Server:
                             common.send_mesages(client_with_messages, response)
                             logger.log(logging.INFO, f'Клиенту отправлен ответ: {response}.')
                         except:
-                            log.info(f'Клиент {client_with_messages.getpeername()} '
+                            logger.log(logging.INFO,f'Клиент {client_with_messages.getpeername()} '
                                      f'отключился от сервера.')
                             self.clients_list.remove(client_with_messages)
                 # if messages_list and send_lst:
