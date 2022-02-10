@@ -19,14 +19,14 @@ class Client:
                  proto = common.Constants.DEFAULT_PROTO, soc_type=common.Constants.DEFAULT_TYPE):
         try:
             self.socket = socket(soc_type,proto)
-            self.socket.settimeout(None)
+            self.socket.settimeout(0.1)
             self.socket.connect((address, port))
         except Exception as e:
             logger.log(logging.CRITICAL, str(e))
             sys.exit()
 
     @log
-    def Exchange(self, to_server):
+    def exchange(self, to_server):
         common.send_mesages(self.socket, to_server)
         logger.log(logging.INFO, f'На сервер отправлено сообщение :{to_server}')
         try:
@@ -39,8 +39,17 @@ class Client:
             logger.log(logging.WARNING,'Не удалось декодировать сообщение сервера.')
 
     @log
-    def Greetings(self, name='Guest'):
-        self.Exchange( common.create_greetings(name))
+    def greetings(self, name='Guest'):
+        self.exchange( common.create_greetings(name))
 
-    def Stop(self):
+    def stop(self):
         self.socket.close()
+
+    def assemble_message(self, **kvargs):
+        return common.create_message(**kvargs)
+
+    def get_message(self):
+        try:
+            return common.get_messages(self.socket)
+        except:
+            pass

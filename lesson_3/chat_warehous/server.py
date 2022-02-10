@@ -40,7 +40,7 @@ class Server:
                     logger.log(logging.INFO, f'Подключился клиент: {client_address}')
                     self.clients_list.append(client)
                 except Exception as e:
-                    print(e)
+                    pass
                 # try:
                 #     messages_from_client = common.get_messages(client)
                 #     logger.log(logging.INFO, f'Сообщение от клиента: {messages_from_client}')
@@ -69,11 +69,16 @@ class Server:
                             response = common.handler_client_messages(messages_from_client)
                             common.send_mesages(client_with_messages, response)
                             logger.log(logging.INFO, f'Клиенту отправлен ответ: {response}.')
+                            if messages_from_client['action'] == 'broadcast':
+                                for cl in self.clients_list:
+                                    common.send_mesages(cl,common.create_message(action='broadcast',
+                                    msg='Disconnect', source = messages_from_client['user']['account_name']))
                         except:
                             logger.log(logging.INFO,f'Клиент {client_with_messages.getpeername()} '
                                      f'отключился от сервера.')
                             self.clients_list.remove(client_with_messages)
-                # if messages_list and send_lst:
+
+                # if self.messages_list and send_lst:
                 #     message = {ACTION: MESSAGE, SENDER: messages_list[0][0],
                 #                TIME: time.time(), MESSAGE_TEXT: messages_list[0][1]}
                 #     del messages_list[0]

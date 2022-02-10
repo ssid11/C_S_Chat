@@ -1,5 +1,5 @@
 import argparse
-import sys
+import sys, os
 import logging
 
 from chat_warehous.client import Client
@@ -18,7 +18,30 @@ try:
     nik_name = input('Введите ваш ник:')
     client = Client(address=args.a, port=args.p)
     logger.log(logging.INFO, f'Запущенн чат-клиент. Адрес {args.a}, порт {args.p}.')
-    client.Greetings(nik_name)
+    client.greetings(nik_name)
 except Exception as e:
     logger.log(logging.CRITICAL,str(e))
-    client.Stop()
+
+while 1:
+    if os.name == 'nt':
+        os.system('cls')
+    else:
+        os.system('clear')
+    try:
+        print(client.get_message())
+        resp = int(input(
+"""Вы можете:
+    0 - завершить программу
+    1 - послать широковещательное сообщение
+    Ваш выбор?(0):"""
+        ))
+    except:
+        resp = 0
+    if resp > 1 or resp < 0:
+        continue
+    if resp == 0:
+        sys.exit(0)
+    ms = client.assemble_message(action='broadcast', msg='Disconnect', user={'account_name':nik_name})
+    client.exchange(ms)
+client.stop()
+
