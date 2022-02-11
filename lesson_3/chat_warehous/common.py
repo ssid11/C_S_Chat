@@ -4,24 +4,15 @@ import time
 from select import select
 
 def get_messages(client):
-    recv_lst = list()
-    send_lst = list()
-    err_lst = list()
-    recv_lst, send_lst, err_lst = select([client], [client],
-                                         [], 0)
-    if recv_lst:
-        try:
-            encoded_response = client.recv(Constants.MAX_PACKAGE_SIZE)
-        except:
-            return
-        # encoded_response = client.recv(Constants.MAX_PACKAGE_SIZE)
-        if isinstance(encoded_response, bytes):
-            decode_response = encoded_response.decode(Constants.ENCODING)
-            response = json.loads(decode_response)
-            if isinstance(response, dict):
-                return response
-            raise ValueError
+    encoded_response = client.recv(Constants.MAX_PACKAGE_SIZE)
+    # encoded_response = client.recv(Constants.MAX_PACKAGE_SIZE)
+    if isinstance(encoded_response, bytes):
+        decode_response = encoded_response.decode(Constants.ENCODING)
+        response = json.loads(decode_response)
+        if isinstance(response, dict):
+            return response
         raise ValueError
+    raise ValueError
 
 def send_mesages(sock, messages):
     json_messages = json.dumps(messages)
@@ -38,7 +29,7 @@ def handler_client_messages(messages):
         return create_message(response=200)
     if  messages[Constants.ACTION] == 'broadcast':
         print('Обработка широковещания')
-
+        return create_message(response=200)
 
 
 

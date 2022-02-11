@@ -30,17 +30,21 @@ class Server:
         except Exception as e:
             logger.log(logging.CRITICAL, str(e))
             sys.exit()
+
+    def connect_search(self, to=0.5):
+        try:
+            self.socket.settimeout(to)
+            client, client_address = self.socket.accept()
+            logger.log(logging.INFO, f'Подключился клиент: {client_address}')
+            self.clients_list.append(client)
+        except Exception as e:
+            pass
+
     @log
     def Run(self):
         try:
             while 1:
-                try:
-                    client, client_address = self.socket.accept()
-                    # client.settimeout(0)
-                    logger.log(logging.INFO, f'Подключился клиент: {client_address}')
-                    self.clients_list.append(client)
-                except Exception as e:
-                    pass
+                self.connect_search()
                 # try:
                 #     messages_from_client = common.get_messages(client)
                 #     logger.log(logging.INFO, f'Сообщение от клиента: {messages_from_client}')
